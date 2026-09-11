@@ -9,9 +9,9 @@ Three pages are live in the config today:
 
 | Class | Audience | When |
 |---|---|---|
-| Financing Class for Compass Agents | Compass agents | Tue, Sep 22 2026, 10:00 AM |
-| VA Home Loan Webinar | Veterans / active duty | Wed, Sep 23 2026, 10:00 AM |
-| VA Loan Class for Real Estate Agents | General agents | Tue, Oct 13 2026, 10:00 AM |
+| Financing Class for Compass Agents | Compass agents | Tue, Sep 22 2026, 10:00 AM MT |
+| VA Home Loan Webinar | Veterans / active duty | Wed, Sep 23 2026, 10:00 AM MT |
+| VA Loan Class for Real Estate Agents | General agents | Tue, Oct 13 2026, 10:00 AM MT |
 
 ---
 
@@ -24,22 +24,26 @@ placeholder:
 npm run build
 ```
 
-Everything below has to be filled in before this goes live. All of it lives in
-`data/site.json` and `data/webinars.json` — no code changes needed.
+**Still outstanding — these block launch:**
 
-- [ ] **`<<ZACK_NMLS_ID>>`** — Zack's individual NMLS number. Required on the page by law.
-- [ ] **`<<ORIGINPOINT_NMLS_ID>>`** — OriginPoint's company NMLS number.
-- [ ] **`<<ZACK_WORK_EMAIL>>`** — the OriginPoint address, not the Gmail.
-- [ ] **`<<ZACK_BUSINESS_PHONE>>`** — the Google My Business number.
-- [ ] **`<<GOHIGHLEVEL_INBOUND_WEBHOOK_URL>>`** — see *Wiring up GoHighLevel* below.
-- [ ] **`<<ZOOM_REGISTRATION_URL_*>>`** — one Zoom registration link per class.
-- [ ] **Confirm the time zone.** `data/site.json` currently says `America/New_York` / `ET`.
-      This was a guess — it never came up on the call. If Zack runs these on Mountain
-      or Pacific, change `timeZone` and `timeZoneLabel` and rebuild. Everything
-      (page copy, calendar files, countdown) follows from that one setting.
-- [ ] **Point the domain** at the deployment (`tarbetmortgageteam.com` per the call —
-      confirm which of the two domains was actually bought, and update `baseUrl`).
+- [ ] **`<<ORIGINPOINT_NMLS_ID>>`** — OriginPoint's company NMLS number. Required on
+      the page alongside Zack's. This is the last piece of config missing.
+- [ ] **`<<ZOOM_REGISTRATION_URL_*>>`** — one Zoom registration link per class, in
+      `data/webinars.json`. Until these are set, a registration still saves to
+      GoHighLevel and the registrant lands on the thank-you page; they just are
+      not handed off to Zoom, so GHL has to email them the link.
+- [ ] **Point `tarbetmortgageteam.com`** at the deployment.
+- [ ] **Send one test registration** once the Zoom links are in, so GoHighLevel
+      captures the payload and you can map the fields (see below).
 - [ ] **Have Zack read the class descriptions.** They are drafted, not approved.
+
+**Done:**
+
+- [x] Zack's NMLS (2040562), work email, and business phone
+- [x] GoHighLevel inbound webhook
+- [x] Time zone — **Mountain** (`America/Denver` / `MT`). All three classes are
+      10:00 AM MT.
+- [x] Domain set to `tarbetmortgageteam.com`
 
 Optional but worth doing:
 
@@ -63,7 +67,7 @@ Fields that matter:
 |---|---|
 | `slug` | The URL: `/webinars/<slug>/`. Keep it short, it goes in texts and emails. |
 | `status` | Set to `"draft"` to build the site without this class showing up. |
-| `startsAt` | ISO timestamp **with offset**, e.g. `2026-10-13T10:00:00-04:00`. Mind daylight saving: `-04:00` through early November, `-05:00` after. |
+| `startsAt` | ISO timestamp **with offset**, e.g. `2026-10-13T10:00:00-06:00`. Mind daylight saving: Mountain is `-06:00` (MDT) through Nov 1 2026, then `-07:00` (MST). Get this wrong and the class shows an hour off everywhere. |
 | `durationMinutes` | Drives the end time on the calendar invite. |
 | `zoomRegistrationUrl` | Where registrants go after the form submits. |
 | `learnPoints` / `forWho` | The two bulleted lists on the page. |
@@ -94,17 +98,17 @@ The payload looks like this:
   "first_name": "Jane",
   "last_name": "Doe",
   "email": "jane@example.com",
-  "phone": "5551234567",
+  "phone": "7195551234",
   "service_status": "Veteran",
   "consent": true,
   "webinar_slug": "va-home-loan-webinar",
   "webinar_title": "VA Home Loan Webinar",
-  "webinar_starts_at": "2026-09-23T14:00:00.000Z",
+  "webinar_starts_at": "2026-09-23T16:00:00.000Z",
   "page_url": "https://tarbetmortgageteam.com/webinars/va-home-loan-webinar/",
   "referrer": "",
-  "submitted_at": "2026-09-11T17:57:09.552Z",
+  "submitted_at": "2026-09-11T18:04:00.000Z",
   "utm_source": "facebook",
-  "utm_campaign": "va_class_oct"
+  "utm_campaign": "va_sept"
 }
 ```
 
@@ -124,6 +128,18 @@ the pages work before GHL is set up.
 
 There is a hidden honeypot field. Bots that fill it get a thank-you page and
 nothing reaches the CRM.
+
+**One thing to know about the webhook URL.** Because the form posts straight from
+the visitor's browser, the webhook URL is visible in the page source. That is
+normal — GoHighLevel's own embedded forms work the same way — but it does mean
+someone could POST junk to it directly. The honeypot stops ordinary bots that
+crawl and fill forms; it cannot stop someone deliberately hitting the endpoint.
+
+If that becomes a problem, the options in order of effort are: add required-field
+and email-validation filters inside the GHL workflow so junk never creates a
+contact; rotate the webhook URL (it is one line in `data/site.json`); or move the
+POST behind a serverless function so the URL never reaches the browser. Not worth
+doing pre-emptively — just know which lever to pull.
 
 ---
 
@@ -169,6 +185,8 @@ fast on a phone on base wifi, which is most of this audience.
 
 - **Branding** is plain per Zack: "very cut and dry", OriginPoint only. No Heroes
   Home Network, no "all 50 states", no NMLS-cookie-cutter styling.
+- **Time zone** is Mountain, confirmed by Colin. The 719 area code on Zack's
+  business line matches.
 - **Dates** are read from the call: Compass on the 22nd, the consumer webinar on
   the 23rd, and the general agent class on a Tuesday in the week of the 12th–16th,
   which is Oct 13. (Fathom's auto-generated action items said "Sep 15" for the

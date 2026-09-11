@@ -5,9 +5,9 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 UID:realtor-va-class@tarbetmortgageteam.com
-DTSTAMP:20260911T175914Z
-DTSTART:20261013T140000Z
-DTEND:20261013T144500Z
+DTSTAMP:20260911T195315Z
+DTSTART:20261013T160000Z
+DTEND:20261013T164500Z
 SUMMARY:VA Loan Class for Real Estate Agents
 DESCRIPTION:Most agents lose VA business twice: once when a listing agent t
  alks their seller out of a VA offer\, and once when their own buyer gets s

@@ -106,6 +106,14 @@ function deriveDates(webinar, site) {
   };
 }
 
+/** E.164 form for tel: links, so tapping the number dials correctly on mobile. */
+function telHref(raw) {
+  const d = String(raw).replace(/\D/g, '');
+  if (d.length === 10) return `+1${d}`;
+  if (d.length === 11 && d.startsWith('1')) return `+${d}`;
+  return `+${d}`;
+}
+
 /* --------------------------------------------------------------- fragments */
 
 function listItems(items, className = '') {
@@ -287,7 +295,7 @@ function main() {
   ].join(' | ');
 
   const contactBits = [];
-  if (!unset(lo.phone)) contactBits.push(`<a href="tel:${esc(String(lo.phone).replace(/[^\d+]/g, ''))}">${esc(lo.phone)}</a>`);
+  if (!unset(lo.phone)) contactBits.push(`<a href="tel:${esc(telHref(lo.phone))}">${esc(lo.phone)}</a>`);
   if (!unset(lo.email)) contactBits.push(`<a href="mailto:${esc(lo.email)}">${esc(lo.email)}</a>`);
 
   const legal = site.legal || {};
