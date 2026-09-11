@@ -72,7 +72,8 @@ h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; letter-spacing:
 }
 .brand { text-decoration: none; color: inherit; display: block; }
 .brand__name { display: block; font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; color: var(--brand-navy); }
-.brand__sub { display: block; font-size: 0.78rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+.brand__logo { display: block; width: auto; max-width: min(340px, 66vw); }
+.brand__sub { display: block; margin-top: 4px; font-size: 0.72rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
 .masthead__contact { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
 .masthead__contact a { color: var(--ink-soft); }
 
@@ -292,6 +293,13 @@ h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; letter-spacing:
   padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.14);
 }
 .footer__brand { margin: 0; font-weight: 700; color: #fff; font-size: 1rem; }
+/* The logo is solid navy, and the footer is too, so reverse it out to white.
+   Works because the mark is a single colour; a multi-colour logo would need a
+   proper reversed file instead. */
+.footer__logo {
+  display: block; width: auto; max-width: min(260px, 62vw);
+  margin-bottom: 6px; filter: brightness(0) invert(1); opacity: 0.92;
+}
 .footer__nmls, .footer__contact { margin: 4px 0 0; }
 .footer__badges { display: flex; align-items: center; gap: 14px; }
 .footer__link { font-weight: 600; }

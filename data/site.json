@@ -2,6 +2,13 @@
   "_comment": "Global site settings. Anything wrapped in << >> is a placeholder that MUST be filled in before launch. Run `npm run build` to see which ones are still outstanding.",
   "siteName": "Tarbet Mortgage Team",
   "tagline": "Live mortgage classes and webinars",
+  "logo": {
+    "_comment": "Logo file in src/assets/. Drop the official artwork in at this name (.svg or .png) and it is picked up on the next build. Set file to \"\" to fall back to a plain text wordmark.",
+    "file": "logo.svg",
+    "alt": "Tarbet Mortgage Team",
+    "heightPx": 58,
+    "isPlaceholder": true
+  },
   "loanOfficer": {
     "name": "Zack Tarbet",
     "title": "Loan Officer",

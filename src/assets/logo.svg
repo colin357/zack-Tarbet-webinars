@@ -1,0 +1,34 @@
+<!--
+  STAND-IN LOGO.
+
+  This is a reproduction of the Tarbet Mortgage Team wordmark, built to match
+  the supplied artwork so the site looks right before the real file lands. It
+  uses a system bold sans, not the brand typeface, so the letterforms are
+  close but not exact.
+
+  To use the real thing: drop the official file in at src/assets/logo.svg
+  (or logo.png and point data/site.json -> logo.file at it) and rebuild.
+  Nothing else needs to change, and the build warning will clear.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 385" role="img" aria-label="Tarbet Mortgage Team">
+  <title>Tarbet Mortgage Team</title>
+  <g fill="#0f2545">
+    <text x="768" y="182"
+          text-anchor="middle"
+          font-family="'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+          font-size="215" font-weight="900" letter-spacing="14">TARBET</text>
+
+    <rect x="0"    y="255" width="168" height="7"/>
+    <rect x="1368" y="255" width="168" height="7"/>
+
+    <text x="768" y="277"
+          text-anchor="middle"
+          font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+          font-size="56" font-weight="700" letter-spacing="17">MORTGAGE TEAM</text>
+
+    <rect x="172" y="349" width="528" height="5"/>
+    <rect x="836" y="349" width="528" height="5"/>
+
+    <path d="M768.00,308.00L774.74,328.73L796.53,328.73L778.90,341.54L785.63,362.27L768.00,349.46L750.37,362.27L757.10,341.54L739.47,328.73L761.26,328.73Z"/>
+  </g>
+</svg>

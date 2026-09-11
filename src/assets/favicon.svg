@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tarbet Mortgage Team">
-  <rect width="64" height="64" rx="10" fill="#10294a"/>
-  <path d="M16 22h32M32 22v26" stroke="#ffffff" stroke-width="7" stroke-linecap="square"/>
-  <circle cx="48" cy="46" r="5" fill="#b8873b"/>
+  <rect width="64" height="64" rx="10" fill="#0f2545"/>
+  <!-- T over a star, echoing the wordmark. -->
+  <path d="M13 13h38v9.5H37.5V38h-11V22.5H13z" fill="#ffffff"/>
+  <path d="M32.00,41.00L34.02,47.22L40.56,47.22L35.27,51.06L37.29,57.28L32.00,53.44L26.71,57.28L28.73,51.06L23.44,47.22L29.98,47.22Z" fill="#ffffff"/>
 </svg>

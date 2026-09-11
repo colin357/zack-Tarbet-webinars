@@ -44,6 +44,15 @@ npm run build
       10:00 AM MT.
 - [x] Domain set to `tarbetmortgageteam.com`
 
+- [ ] **Swap in the real logo file.** `src/assets/logo.svg` is currently a
+      *reproduction* of the Tarbet Mortgage Team wordmark, drawn to match the
+      artwork so the site does not look unbranded. It uses a system bold sans,
+      not the brand typeface, so the letterforms are close but not exact.
+      Replace that file with the official artwork (`.svg` preferred, `.png`
+      fine — point `logo.file` in `data/site.json` at it) and set
+      `logo.isPlaceholder` to `false`. Nothing else changes; the build warning
+      clears.
+
 Optional but worth doing:
 
 - [ ] Add a GA4 measurement ID in `data/site.json` → `analytics.ga4MeasurementId`.
@@ -142,6 +151,32 @@ doing pre-emptively — just know which lever to pull.
 
 ---
 
+## The logo
+
+`data/site.json` → `logo` controls it:
+
+```json
+"logo": { "file": "logo.svg", "alt": "Tarbet Mortgage Team", "heightPx": 58 }
+```
+
+The file lives in `src/assets/`. It renders in the masthead at `heightPx`, and
+again in the footer at 85% of that. Set `file` to `""` and the site falls back
+to a plain text wordmark — nothing breaks.
+
+The footer is dark navy and the logo is navy, so the footer copy is reversed to
+white with a CSS filter. That works because the mark is a single colour. **If a
+multi-colour version ever replaces it, that filter needs to go** and a properly
+reversed file should be supplied instead — see `.footer__logo` in
+`src/assets/styles.css`.
+
+The favicon (`src/assets/favicon.svg`) is a T over a star, echoing the wordmark.
+
+One thing worth a look: the site uses a muted gold accent (`--brand-accent` in
+`styles.css`) for eyebrow text, checkmarks, and the countdown. The supplied logo
+is monochrome navy, so that accent is a choice rather than a brand colour. If
+there is an official secondary colour, it is a one-line change at the top of the
+stylesheet.
+
 ## Running it
 
 ```bash
@@ -167,7 +202,7 @@ and upload the contents of `dist/`. It is all static files.
 data/site.json        global settings: branding, NMLS, time zone, webhook, legal
 data/webinars.json    one entry per class — this is what you actually edit
 src/templates/        page shells
-src/assets/           styles.css, app.js, favicon
+src/assets/           styles.css, app.js, logo.svg, favicon.svg
 build.mjs             generates dist/ from the above
 dist/                 build output, committed so the site can be served as-is
 ```

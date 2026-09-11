@@ -313,7 +313,25 @@ function main() {
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${esc(site.analytics.ga4MeasurementId)}');</script>`
     : '';
 
+  const logoCfg = site.logo || {};
+  const logoFile = logoCfg.file && assetVersions[logoCfg.file] ? logoCfg.file : '';
+  if (logoCfg.file && !logoFile) {
+    console.log(`\n  Warning: logo file "src/assets/${logoCfg.file}" not found. Falling back to the text wordmark.`);
+  }
+  const logoSrc = logoFile ? `/assets/${logoFile}?v=${assetVersions[logoFile]}` : '';
+  const logoHeight = Number(logoCfg.heightPx) || 42;
+
+  const brandMark = logoSrc
+    ? `<img class="brand__logo" src="${esc(logoSrc)}" alt="${esc(logoCfg.alt || site.siteName)}" style="height:${logoHeight}px">`
+    : `<span class="brand__name">${esc(site.siteName)}</span>`;
+
+  const footerMark = logoSrc
+    ? `<img class="footer__logo" src="${esc(logoSrc)}" alt="${esc(logoCfg.alt || site.siteName)}" style="height:${Math.round(logoHeight * 0.85)}px">`
+    : `<p class="footer__brand">${esc(site.siteName)}</p>`;
+
   const chrome = {
+    brandMark,
+    footerMark,
     siteName: site.siteName,
     tagline: site.tagline,
     year,
@@ -497,6 +515,14 @@ function report(webinars, site) {
   for (const [name, locations] of [...placeholders].sort()) {
     console.log(`    <<${name}>>`);
     for (const loc of locations) console.log(`        ${loc}`);
+  }
+
+  if (site.logo?.isPlaceholder) {
+    console.log(
+      '  Note: the logo is a stand-in reproduction, not the official artwork.\n' +
+        '        Drop the real file in at src/assets/' + (site.logo.file || 'logo.svg') +
+        ' and set\n        logo.isPlaceholder to false in data/site.json.'
+    );
   }
 
   if (unset(site.lead?.webhookUrl)) {
