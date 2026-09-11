@@ -1,0 +1,109 @@
+[
+  {
+    "slug": "compass-agent-financing-class",
+    "status": "published",
+    "title": "Financing Class for Compass Agents",
+    "subtitle": "A straightforward look at what is actually getting buyers approved right now.",
+    "audience": "agents",
+    "audienceLabel": "Compass agents",
+    "startsAt": "2026-09-22T10:00:00-04:00",
+    "durationMinutes": 45,
+    "mode": "form",
+    "zoomRegistrationUrl": "<<ZOOM_REGISTRATION_URL_COMPASS>>",
+    "location": "Live on Zoom",
+    "summary": "Forty-five minutes, no fluff. We go through the loan programs and structures that are moving deals in this market, what a strong pre-approval looks like, and how to keep a file from falling apart between contract and closing.",
+    "learnPoints": [
+      "Where rates and buydowns actually stand, and how to explain them to a buyer without overpromising",
+      "Conventional, FHA, and VA side by side, and which one fits which buyer",
+      "What separates a pre-approval that holds up from one that does not",
+      "Seller concessions and temporary buydowns: when they help and when they cost your buyer money",
+      "The three things that most often blow up a file after contract, and how to catch them early"
+    ],
+    "forWho": [
+      "Compass agents working with buyers in today's rate environment",
+      "Agents who want a lender they can put on the phone with a client mid-showing",
+      "Anyone who has lost a deal to a financing surprise in the last year"
+    ],
+    "extraField": {
+      "name": "brokerage",
+      "label": "Office / team",
+      "placeholder": "e.g. Compass - Downtown",
+      "required": false
+    },
+    "seoDescription": "Free 45-minute live financing class for Compass agents with Zack Tarbet of OriginPoint. Loan programs, pre-approvals, buydowns, and keeping deals together."
+  },
+  {
+    "slug": "va-home-loan-webinar",
+    "status": "published",
+    "title": "VA Home Loan Webinar",
+    "subtitle": "For veterans, active-duty service members, and surviving spouses.",
+    "audience": "consumers",
+    "audienceLabel": "Veterans and active-duty service members",
+    "startsAt": "2026-09-23T10:00:00-04:00",
+    "durationMinutes": 45,
+    "mode": "form",
+    "zoomRegistrationUrl": "<<ZOOM_REGISTRATION_URL_VA_CONSUMER>>",
+    "location": "Live on Zoom",
+    "summary": "A plain-English walkthrough of the VA home loan benefit: what you have earned, what it actually costs, and how to use it without getting talked into something that does not fit. Bring your questions. We answer them live at the end.",
+    "learnPoints": [
+      "How VA entitlement works, and what $0 down really means for your payment",
+      "The VA funding fee, who is exempt, and how exemptions get applied",
+      "VA versus conventional and FHA: an honest comparison, not a sales pitch",
+      "Using your benefit more than once, and what happens to entitlement when you keep a home",
+      "BAH, PCS timing, and buying before or after you report to a new duty station",
+      "Credit, debt-to-income, and residual income: what underwriters are actually looking at"
+    ],
+    "forWho": [
+      "Veterans and active-duty service members buying a first or next home",
+      "Anyone who was told they could not use their VA benefit and wants a second opinion",
+      "Surviving spouses who may be eligible and have never been walked through it"
+    ],
+    "extraField": {
+      "name": "service_status",
+      "label": "Service status",
+      "type": "select",
+      "options": [
+        "Active duty",
+        "Veteran",
+        "National Guard or Reserve",
+        "Surviving spouse",
+        "Other"
+      ],
+      "required": false
+    },
+    "seoDescription": "Free live VA home loan webinar for veterans, active-duty service members, and surviving spouses. Entitlement, funding fee, $0 down, and live Q&A with Zack Tarbet of OriginPoint."
+  },
+  {
+    "slug": "realtor-va-class",
+    "status": "published",
+    "title": "VA Loan Class for Real Estate Agents",
+    "subtitle": "How to write, win, and close VA offers without the guesswork.",
+    "audience": "agents",
+    "audienceLabel": "Real estate agents",
+    "startsAt": "2026-10-13T10:00:00-04:00",
+    "durationMinutes": 45,
+    "mode": "form",
+    "zoomRegistrationUrl": "<<ZOOM_REGISTRATION_URL_REALTOR_VA>>",
+    "location": "Live on Zoom",
+    "summary": "Most agents lose VA business twice: once when a listing agent talks their seller out of a VA offer, and once when their own buyer gets steered away from the benefit. This class fixes both. Small group on purpose, so bring real scenarios.",
+    "learnPoints": [
+      "The VA myths listing agents still believe, and how to answer them in one sentence",
+      "What VA will and will not allow a seller to pay, and how to structure the offer",
+      "The VA appraisal, minimum property requirements, and how Tidewater actually works",
+      "Writing a VA offer that competes against cash and conventional",
+      "How to spot a buyer who is VA-eligible and does not know it"
+    ],
+    "forWho": [
+      "Agents who want more military and veteran business",
+      "Listing agents who keep steering sellers away from VA offers",
+      "Anyone near a base who has left VA deals on the table"
+    ],
+    "extraField": {
+      "name": "brokerage",
+      "label": "Brokerage",
+      "placeholder": "e.g. Keller Williams - Jacksonville",
+      "required": false
+    },
+    "seoDescription": "Free live VA loan class for real estate agents. Writing and winning VA offers, appraisals, seller concessions, and MPRs, with Zack Tarbet of OriginPoint."
+  }
+]

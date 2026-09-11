@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ pageTitle }}</title>
+<meta name="description" content="{{ metaDescription }}">
+<link rel="canonical" href="{{ canonical }}">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ siteName }}">
+<meta property="og:title" content="{{ pageTitle }}">
+<meta property="og:description" content="{{ metaDescription }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/styles.css?v={{ cssVersion }}">
+{{{ head }}}
+{{{ analytics }}}
+</head>
+<body class="{{ bodyClass }}">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <a class="brand" href="/">
+      <span class="brand__name">{{ siteName }}</span>
+      <span class="brand__sub">{{ tagline }}</span>
+    </a>
+    {{{ mastheadContact }}}
+  </div>
+</header>
+
+<main id="main">
+{{{ content }}}
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div>
+        <p class="footer__brand">{{ siteName }}</p>
+        <p class="footer__nmls">{{{ nmlsLine }}}</p>
+        {{{ footerContact }}}
+      </div>
+      <div class="footer__badges">
+        {{{ equalHousing }}}
+        <a class="footer__link" href="{{ consumerAccessUrl }}" target="_blank" rel="noopener noreferrer">NMLS Consumer Access</a>
+      </div>
+    </div>
+    <div class="footer__legal">
+      {{{ footerLegal }}}
+      <p class="footer__copy">&copy; {{ year }} {{ siteName }}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/app.js?v={{ jsVersion }}" defer></script>
+</body>
+</html>

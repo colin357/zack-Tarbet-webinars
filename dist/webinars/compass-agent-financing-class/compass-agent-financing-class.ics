@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tarbet Mortgage Team//Webinars//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:compass-agent-financing-class@tarbetmortgageteam.com
+DTSTAMP:20260911T175913Z
+DTSTART:20260922T140000Z
+DTEND:20260922T144500Z
+SUMMARY:Financing Class for Compass Agents
+DESCRIPTION:Forty-five minutes\, no fluff. We go through the loan programs 
+ and structures that are moving deals in this market\, what a strong pre-ap
+ proval looks like\, and how to keep a file from falling apart between cont
+ ract and closing.\n\n- Where rates and buydowns actually stand\, and how t
+ o explain them to a buyer without overpromising\n- Conventional\, FHA\, an
+ d VA side by side\, and which one fits which buyer\n- What separates a pre
+ -approval that holds up from one that does not\n- Seller concessions and t
+ emporary buydowns: when they help and when they cost your buyer money\n- T
+ he three things that most often blow up a file after contract\, and how to
+  catch them early\n\nHosted by Zack Tarbet\, Loan Officer\, OriginPoint.\n
+ Details and Zoom link: https://tarbetmortgageteam.com/webinars/compass-age
+ nt-financing-class/
+LOCATION:Live on Zoom
+URL:https://tarbetmortgageteam.com/webinars/compass-agent-financing-class/
+END:VEVENT
+END:VCALENDAR

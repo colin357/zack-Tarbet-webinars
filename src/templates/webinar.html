@@ -1,0 +1,119 @@
+<article class="webinar"
+         data-slug="{{ slug }}"
+         data-mode="{{ registerMode }}"
+         data-webhook="{{ webhookUrl }}"
+         data-zoom="{{ zoomUrl }}"
+         data-start="{{ isoStart }}"
+         data-tz="{{ timeZone }}"
+         data-title="{{ title }}">
+
+  <div class="wrap webinar__grid">
+
+    <div class="webinar__main">
+      <header class="webinar__intro">
+        <p class="eyebrow">{{ audienceLabel }}</p>
+        <h1 class="webinar__title">{{ title }}</h1>
+        <p class="webinar__subtitle">{{ subtitle }}</p>
+
+        {{{ pastNotice }}}
+
+        <dl class="facts">
+          <div class="facts__item">
+            <dt>When</dt>
+            <dd><time datetime="{{ isoStart }}">{{ whenLine }}</time><span class="facts__local" data-local-time hidden></span></dd>
+          </div>
+          <div class="facts__item">
+            <dt>How long</dt>
+            <dd>{{ duration }}, including live Q&amp;A</dd>
+          </div>
+          <div class="facts__item">
+            <dt>Where</dt>
+            <dd>{{ location }}</dd>
+          </div>
+          <div class="facts__item">
+            <dt>Cost</dt>
+            <dd>Free</dd>
+          </div>
+        </dl>
+
+        <p class="countdown" data-countdown hidden></p>
+        <p class="jump"><a class="btn btn--primary" href="#register">Save my seat</a></p>
+      </header>
+
+      <section class="webinar__section">
+        <h2 class="section__title">What this covers</h2>
+        <p class="lede">{{ summary }}</p>
+        <ul class="checklist">
+          {{{ learnList }}}
+        </ul>
+      </section>
+
+      <section class="webinar__section">
+        <h2 class="section__title">Who it is for</h2>
+        <ul class="bullets">
+          {{{ forWhoList }}}
+        </ul>
+      </section>
+
+      <section class="webinar__section">
+        <h2 class="section__title">Add it to your calendar</h2>
+        <p>Registering sends you the Zoom link by email. Want it on your calendar now?</p>
+        <p class="calendar-links">
+          <a class="btn btn--ghost" href="{{ googleCalendarUrl }}" target="_blank" rel="noopener noreferrer">Google Calendar</a>
+          <a class="btn btn--ghost" href="{{ icsUrl }}" download>Apple / Outlook (.ics)</a>
+        </p>
+      </section>
+
+      <aside class="host">
+        <h2 class="host__title">Your host</h2>
+        <p class="host__name">{{ loName }}</p>
+        <p class="host__role">{{ loTitle }}, {{ loCompany }}</p>
+        <p class="host__bio">{{ loName }} works with buyers, veterans, and real estate agents on purchase and refinance financing. These classes are education first. If you want to talk about your own situation afterward, you can, but nobody will chase you.</p>
+        <p class="host__cta"><a href="#register">Register for this class</a></p>
+      </aside>
+    </div>
+
+    <aside class="register" id="register">
+      <div class="register__card">
+        <h2 class="register__title">Register</h2>
+        <p class="register__meta">{{ weekday }}, {{ dateLong }} &middot; {{ timeShort }} {{ timeZoneLabel }}</p>
+
+        <form class="form" data-register novalidate>
+          <div class="field">
+            <label for="firstName">First name <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="firstName" name="first_name" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="lastName">Last name <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="lastName" name="last_name" autocomplete="family-name" required>
+          </div>
+          <div class="field">
+            <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="email" name="email" autocomplete="email" inputmode="email" required>
+          </div>
+          <div class="field">
+            <label for="phone">Mobile phone <span class="req" aria-hidden="true">*</span></label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" required>
+          </div>
+          {{{ extraField }}}
+
+          <div class="field field--check">
+            <input type="checkbox" id="consent" name="consent" required>
+            <label for="consent">{{ consentText }}</label>
+          </div>
+
+          <div class="hp" aria-hidden="true">
+            <label for="company_website">Leave this blank</label>
+            <input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <p class="form__error" data-form-error role="alert" hidden></p>
+
+          <button class="btn btn--primary btn--block" type="submit" data-submit>Save my seat</button>
+          <p class="form__fine">We use your details to send the Zoom link and reminders. No spam.</p>
+        </form>
+      </div>
+    </aside>
+
+  </div>
+</article>

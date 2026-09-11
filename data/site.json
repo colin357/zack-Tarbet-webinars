@@ -1,0 +1,40 @@
+{
+  "_comment": "Global site settings. Anything wrapped in << >> is a placeholder that MUST be filled in before launch. Run `npm run build` to see which ones are still outstanding.",
+
+  "siteName": "Tarbet Mortgage Team",
+  "tagline": "Live mortgage classes and webinars",
+  "loanOfficer": {
+    "name": "Zack Tarbet",
+    "title": "Loan Officer",
+    "company": "OriginPoint",
+    "nmls": "<<ZACK_NMLS_ID>>",
+    "companyNmls": "<<ORIGINPOINT_NMLS_ID>>",
+    "email": "<<ZACK_WORK_EMAIL>>",
+    "phone": "<<ZACK_BUSINESS_PHONE>>",
+    "photo": ""
+  },
+
+  "baseUrl": "https://tarbetmortgageteam.com",
+  "timeZone": "America/New_York",
+  "timeZoneLabel": "ET",
+
+  "lead": {
+    "_comment": "POST target for registration forms. Use a GoHighLevel Inbound Webhook URL. Leave blank to fall back to each webinar's zoomRegistrationUrl (the form will then just forward to Zoom).",
+    "webhookUrl": "<<GOHIGHLEVEL_INBOUND_WEBHOOK_URL>>",
+    "consentText": "By registering you agree to receive emails and text messages from Zack Tarbet at OriginPoint about this class and related mortgage information. Message and data rates may apply. Reply STOP to opt out at any time."
+  },
+
+  "analytics": {
+    "ga4MeasurementId": "",
+    "metaPixelId": ""
+  },
+
+  "legal": {
+    "equalHousing": true,
+    "disclaimer": "This is not a commitment to lend. All loans are subject to credit approval, income verification, and property appraisal. Program terms and availability are subject to change without notice. Not all applicants will qualify.",
+    "vaDisclaimer": "Not affiliated with, endorsed by, or sponsored by the U.S. Department of Veterans Affairs, the Department of Defense, or any other government agency.",
+    "consumerAccessUrl": "https://www.nmlsconsumeraccess.org/",
+    "privacyUrl": "",
+    "licensingNote": "Licensed in the states where Zack Tarbet holds an active license. Verify licensing at NMLS Consumer Access."
+  }
+}

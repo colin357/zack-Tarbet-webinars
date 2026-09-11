@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tarbet Mortgage Team//Webinars//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:realtor-va-class@tarbetmortgageteam.com
+DTSTAMP:20260911T175914Z
+DTSTART:20261013T140000Z
+DTEND:20261013T144500Z
+SUMMARY:VA Loan Class for Real Estate Agents
+DESCRIPTION:Most agents lose VA business twice: once when a listing agent t
+ alks their seller out of a VA offer\, and once when their own buyer gets s
+ teered away from the benefit. This class fixes both. Small group on purpos
+ e\, so bring real scenarios.\n\n- The VA myths listing agents still believ
+ e\, and how to answer them in one sentence\n- What VA will and will not al
+ low a seller to pay\, and how to structure the offer\n- The VA appraisal\,
+  minimum property requirements\, and how Tidewater actually works\n- Writi
+ ng a VA offer that competes against cash and conventional\n- How to spot a
+  buyer who is VA-eligible and does not know it\n\nHosted by Zack Tarbet\, 
+ Loan Officer\, OriginPoint.\nDetails and Zoom link: https://tarbetmortgage
+ team.com/webinars/realtor-va-class/
+LOCATION:Live on Zoom
+URL:https://tarbetmortgageteam.com/webinars/realtor-va-class/
+END:VEVENT
+END:VCALENDAR

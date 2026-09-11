@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Tarbet Mortgage Team//Webinars//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:va-home-loan-webinar@tarbetmortgageteam.com
+DTSTAMP:20260911T175913Z
+DTSTART:20260923T140000Z
+DTEND:20260923T144500Z
+SUMMARY:VA Home Loan Webinar
+DESCRIPTION:A plain-English walkthrough of the VA home loan benefit: what y
+ ou have earned\, what it actually costs\, and how to use it without gettin
+ g talked into something that does not fit. Bring your questions. We answer
+  them live at the end.\n\n- How VA entitlement works\, and what $0 down re
+ ally means for your payment\n- The VA funding fee\, who is exempt\, and ho
+ w exemptions get applied\n- VA versus conventional and FHA: an honest comp
+ arison\, not a sales pitch\n- Using your benefit more than once\, and what
+  happens to entitlement when you keep a home\n- BAH\, PCS timing\, and buy
+ ing before or after you report to a new duty station\n- Credit\, debt-to-i
+ ncome\, and residual income: what underwriters are actually looking at\n\n
+ Hosted by Zack Tarbet\, Loan Officer\, OriginPoint.\nDetails and Zoom link
+ : https://tarbetmortgageteam.com/webinars/va-home-loan-webinar/
+LOCATION:Live on Zoom
+URL:https://tarbetmortgageteam.com/webinars/va-home-loan-webinar/
+END:VEVENT
+END:VCALENDAR
