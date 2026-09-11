@@ -17,7 +17,7 @@
   "timeZoneLabel": "MT",
   "lead": {
     "_comment": "POST target for registration forms. Use a GoHighLevel Inbound Webhook URL. Leave blank to fall back to each webinar's zoomRegistrationUrl (the form will then just forward to Zoom).",
-    "webhookUrl": "https://services.leadconnectorhq.com/hooks/zBVd5G9GO3U5Q1HtY2dh/webhook-trigger/8e4041e9-b36c-46c3-a350-7dbadf0a0a61",
+    "webhookUrl": "https://services.leadconnectorhq.com/hooks/zBVd5G9GO3U5Q1HtY2dh/webhook-trigger/0c3b5f1c-871e-49cc-973e-8fbec6a98665",
     "consentText": "By registering you agree to receive emails and text messages from Zack Tarbet at OriginPoint about this class and related mortgage information. Message and data rates may apply. Reply STOP to opt out at any time."
   },
   "analytics": {
