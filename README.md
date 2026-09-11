@@ -24,10 +24,8 @@ placeholder:
 npm run build
 ```
 
-**Still outstanding — these block launch:**
+**Still outstanding — the Zoom links are the only config left:**
 
-- [ ] **`<<ORIGINPOINT_NMLS_ID>>`** — OriginPoint's company NMLS number. Required on
-      the page alongside Zack's. This is the last piece of config missing.
 - [ ] **`<<ZOOM_REGISTRATION_URL_*>>`** — one Zoom registration link per class, in
       `data/webinars.json`. Until these are set, a registration still saves to
       GoHighLevel and the registrant lands on the thank-you page; they just are
@@ -39,7 +37,8 @@ npm run build
 
 **Done:**
 
-- [x] Zack's NMLS (2040562), work email, and business phone
+- [x] NMLS disclosure — Zack (2040562) and OriginPoint (2185899), on every page
+- [x] Work email and business phone
 - [x] GoHighLevel inbound webhook
 - [x] Time zone — **Mountain** (`America/Denver` / `MT`). All three classes are
       10:00 AM MT.
