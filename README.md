@@ -31,8 +31,8 @@ npm run build
       GoHighLevel and the registrant lands on the thank-you page; they just are
       not handed off to Zoom, so GHL has to email them the link.
 - [ ] **Point `tarbetmortgageteam.com`** at the deployment.
-- [ ] **Send one test registration** once the Zoom links are in, so GoHighLevel
-      captures the payload and you can map the fields (see below).
+- [ ] **Send one test registration** once the Zoom links are in, and confirm it
+      lands in *both* GoHighLevel and the Google Sheet (see below).
 - [ ] **Have Zack read the class descriptions.** They are drafted, not approved.
 
 **Done:**
@@ -88,18 +88,33 @@ from links already out in the world.
 
 ---
 
-## Wiring up GoHighLevel
+## Where leads go
 
-The registration form posts JSON to whatever URL is in `site.json` → `lead.webhookUrl`.
+Every registration is posted to **all** the destinations in `data/site.json` →
+`lead.destinations`, with the identical JSON payload. Today that is two places:
 
-1. In GoHighLevel: **Automation → Workflows → Create Workflow → Inbound Webhook** trigger.
-2. Copy the webhook URL into `data/site.json`.
-3. Submit one test registration so GHL captures the payload shape, then map the
-   fields onto the contact record.
-4. Add the follow-up actions to the workflow: confirmation email with the Zoom
-   link, a reminder the day before, and one the morning of.
+| Destination | Required | Why |
+|---|---|---|
+| GoHighLevel | yes | The CRM. Sends the confirmation email, the Zoom link, and reminders. |
+| Google Sheet (Apps Script) | no | A running record of every signup. |
 
-The payload looks like this:
+"Required" only controls what happens to the *registrant* when a destination
+fails. A required failure with no Zoom link configured shows an error and lets
+them retry. A non-required failure is logged to the browser console and the
+registrant never sees it — a broken spreadsheet must never cost a signup.
+
+Both are still awaited before the redirect, and both requests are sent with
+`keepalive`, so navigating to Zoom does not cancel an in-flight post. A
+destination that hangs is given 8 seconds before the redirect proceeds without
+it; `keepalive` means the request usually still lands.
+
+To add a destination, add an object to the array. Nothing else changes:
+
+```json
+{ "name": "Zapier", "url": "https://hooks.zapier.com/...", "required": false }
+```
+
+### The payload
 
 ```json
 {
@@ -114,42 +129,96 @@ The payload looks like this:
   "webinar_starts_at": "2026-09-23T16:00:00.000Z",
   "page_url": "https://tarbetmortgageteam.com/webinars/va-home-loan-webinar/",
   "referrer": "",
-  "submitted_at": "2026-09-11T18:04:00.000Z",
+  "submitted_at": "2026-09-15T20:18:39.180Z",
   "utm_source": "facebook",
   "utm_campaign": "va_sept"
 }
 ```
 
-`utm_*`, `fbclid`, and `gclid` are passed straight through from the link, so the
-Facebook group post, the email blast to the 2,000 past registrants, and Stefan's
-call list can each carry their own tag and be counted separately. Tag your links:
+The audience-specific field varies by class: `service_status` on the veteran
+webinar, `brokerage` on the two agent classes. `utm_*`, `fbclid` and `gclid` are
+passed through from the link, so the Facebook group post, the email blast, and
+Stefan's call list can each be tagged and counted separately:
 
 ```
 https://tarbetmortgageteam.com/webinars/va-home-loan-webinar/?utm_source=facebook&utm_medium=group&utm_campaign=va_sept
 ```
 
-**Failure behaviour is deliberate.** If GoHighLevel is down or returns an error,
-the registrant is still forwarded to the Zoom registration page rather than
-shown an error. We would rather lose the CRM record than the attendee. If no
-webhook is configured at all, the form validates and then hands off to Zoom, so
-the pages work before GHL is set up.
+### Why the Sheet post uses text/plain
 
-There is a hidden honeypot field. Bots that fill it get a thank-you page and
-nothing reaches the CRM.
+Apps Script web apps do not answer the CORS preflight (`OPTIONS`) that a
+`Content-Type: application/json` POST triggers, so the browser would block the
+request before sending it. Posting as `text/plain;charset=utf-8` keeps it a CORS
+"simple request", which needs no preflight. **The body is still JSON** — read it
+with `JSON.parse(e.postData.contents)`, not `e.parameter`.
 
-**One thing to know about the webhook URL.** Because the form posts straight from
-the visitor's browser, the webhook URL is visible in the page source. That is
-normal — GoHighLevel's own embedded forms work the same way — but it does mean
-someone could POST junk to it directly. The honeypot stops ordinary bots that
-crawl and fill forms; it cannot stop someone deliberately hitting the endpoint.
+That is what `contentType` in the destination config controls. Do not change it
+to `application/json` for an Apps Script endpoint.
 
-If that becomes a problem, the options in order of effort are: add required-field
-and email-validation filters inside the GHL workflow so junk never creates a
-contact; rotate the webhook URL (it is one line in `data/site.json`); or move the
-POST behind a serverless function so the URL never reaches the browser. Not worth
-doing pre-emptively — just know which lever to pull.
+### What the Apps Script needs to look like
 
----
+The endpoint was supplied already deployed, so this was not verified against it
+— if rows are not appearing, compare it against this:
+
+```js
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var sheet = SpreadsheetApp.openById('YOUR_SHEET_ID').getSheetByName('Registrations');
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow([
+      'Received', 'First', 'Last', 'Email', 'Phone', 'Brokerage / service status',
+      'Consent', 'Class', 'Class date', 'Source', 'Campaign', 'Page'
+    ]);
+  }
+
+  sheet.appendRow([
+    new Date(),
+    data.first_name || '',
+    data.last_name || '',
+    data.email || '',
+    "'" + (data.phone || ''),            // leading quote keeps the leading digits
+    data.brokerage || data.service_status || '',
+    data.consent ? 'Yes' : 'No',
+    data.webinar_title || '',
+    data.webinar_starts_at || '',
+    data.utm_source || '',
+    data.utm_campaign || '',
+    data.page_url || ''
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+Two deployment settings matter, or every post fails silently:
+
+- **Execute as:** Me
+- **Who has access:** Anyone
+
+Re-deploying an Apps Script issues a **new `/exec` URL** unless you deploy over
+the existing version. If you create a new deployment, update the URL in
+`data/site.json`.
+
+### Before launch
+
+Submit one real registration on the live site and confirm it lands in **both**
+places — a row in the Sheet and a contact in GoHighLevel. That also lets GHL
+capture the payload so you can map the fields onto the contact record.
+
+**One thing to know about the URLs.** Because the form posts from the visitor's
+browser, both destination URLs are visible in the page source. That is normal —
+GoHighLevel's own embedded forms work the same way — but it means someone could
+POST junk directly. The honeypot stops ordinary form-filling bots; it cannot
+stop someone deliberately hitting the endpoint.
+
+If that becomes a problem: add required-field and email validation inside the
+GHL workflow and the Apps Script so junk never creates a contact or a row;
+rotate the URLs (both are one line in `data/site.json`); or move the posts behind
+a serverless function so neither URL reaches the browser. Not worth doing
+pre-emptively — just know which lever to pull.
 
 ## How the registration pages are laid out
 

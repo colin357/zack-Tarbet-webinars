@@ -63,6 +63,62 @@
     return out;
   }
 
+  /* -------------------------------------------------- lead destinations */
+
+  function parseEndpoints(article) {
+    try {
+      var list = JSON.parse(article.getAttribute('data-endpoints') || '[]');
+      return Array.isArray(list) ? list.filter(function (d) { return d && d.url; }) : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  /**
+   * Posts one registration to one destination. Never rejects — the caller gets
+   * a result object either way, so one bad endpoint cannot break the others.
+   *
+   * keepalive lets the request finish even though we navigate away to Zoom or
+   * the thank-you page immediately afterwards.
+   */
+  function postLead(dest, data) {
+    var done = function (ok, extra) {
+      var r = { name: dest.name || 'Webhook', required: dest.required !== false, ok: ok };
+      if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) r[k] = extra[k]; } }
+      return r;
+    };
+
+    return fetch(dest.url, {
+      method: 'POST',
+      // Content type is per-destination: Apps Script needs text/plain to stay a
+      // CORS "simple request", since it does not answer an OPTIONS preflight.
+      headers: { 'Content-Type': dest.contentType || 'application/json' },
+      body: JSON.stringify(data),
+      mode: dest.noCors ? 'no-cors' : 'cors',
+      keepalive: true
+    }).then(
+      function (res) {
+        // An opaque (no-cors) response tells us nothing, so treat it as sent.
+        if (res.type === 'opaque') return done(true, { opaque: true });
+        return done(res.ok, { status: res.status });
+      },
+      function (err) { return done(false, { error: String(err) }); }
+    );
+  }
+
+  /** Resolves early if a destination hangs; keepalive keeps it going regardless. */
+  function withTimeout(promise, ms, fallback) {
+    return new Promise(function (resolve) {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (!settled) { settled = true; resolve(fallback); }
+      }, ms);
+      promise.then(function (value) {
+        if (!settled) { settled = true; clearTimeout(timer); resolve(value); }
+      });
+    });
+  }
+
   /* ------------------------------------------------- local time + countdown */
 
   function timeIn(date, timeZone) {
@@ -289,10 +345,10 @@
 
       if (!validate()) return;
 
-      var webhook = article.getAttribute('data-webhook');
+      var endpoints = parseEndpoints(article);
       var zoom = article.getAttribute('data-zoom');
 
-      if (!webhook && !zoom) {
+      if (!endpoints.length && !zoom) {
         showError('Registration for this class is not open yet. Please check back shortly.');
         return;
       }
@@ -301,31 +357,47 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving your seat...';
 
-      // No webhook configured: the form is just a front door for Zoom.
-      if (!webhook) {
+      // Nowhere to record the lead: the form is just a front door for Zoom.
+      if (!endpoints.length) {
         window.location.href = zoom;
         return;
       }
 
-      fetch(webhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload())
-      })
-        .then(function (response) {
-          if (!response.ok) throw new Error('Request failed with status ' + response.status);
-          window.location.href = zoom || '/thank-you/';
+      var data = payload();
+
+      Promise.all(
+        endpoints.map(function (dest) {
+          return withTimeout(postLead(dest, data), 8000, {
+            name: dest.name || 'Webhook',
+            required: dest.required !== false,
+            ok: false,
+            timedOut: true
+          });
         })
-        .catch(function () {
-          // Never strand a registrant: if the CRM is down, send them to Zoom.
-          if (zoom) {
-            window.location.href = zoom;
-            return;
+      ).then(function (results) {
+        var failedRequired = [];
+
+        results.forEach(function (r) {
+          if (r.ok) return;
+          // Surfaced for debugging; a non-required failure never reaches the user.
+          if (window.console && console.warn) {
+            console.warn('Registration not confirmed by ' + r.name + ':',
+              r.timedOut ? 'timed out' : (r.error || 'HTTP ' + r.status));
           }
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Save my seat';
-          showError('Something went wrong on our end. Please try again, or email us and we will register you manually.');
+          if (r.required) failedRequired.push(r);
         });
+
+        // Never strand a registrant: if Zoom is configured, send them there
+        // regardless of what the back end did.
+        if (!failedRequired.length || zoom) {
+          window.location.href = zoom || '/thank-you/';
+          return;
+        }
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save my seat';
+        showError('Something went wrong on our end. Please try again, or email us and we will register you manually.');
+      });
     });
   }
 

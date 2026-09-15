@@ -23,8 +23,21 @@
   "timeZone": "America/Denver",
   "timeZoneLabel": "MT",
   "lead": {
-    "_comment": "POST target for registration forms. Use a GoHighLevel Inbound Webhook URL. Leave blank to fall back to each webinar's zoomRegistrationUrl (the form will then just forward to Zoom).",
-    "webhookUrl": "https://services.leadconnectorhq.com/hooks/zBVd5G9GO3U5Q1HtY2dh/webhook-trigger/0c3b5f1c-871e-49cc-973e-8fbec6a98665",
+    "_comment": "Every destination below receives a copy of each registration, with the same JSON payload. required:true means the registrant flow depends on it (GHL sends the confirmation email and reminders). Non-required destinations are best-effort: they are still awaited so the data lands, but a failure never blocks or errors a signup.",
+    "destinations": [
+      {
+        "name": "GoHighLevel",
+        "url": "https://services.leadconnectorhq.com/hooks/zBVd5G9GO3U5Q1HtY2dh/webhook-trigger/0c3b5f1c-871e-49cc-973e-8fbec6a98665",
+        "required": true
+      },
+      {
+        "name": "Google Sheet",
+        "url": "https://script.google.com/macros/s/AKfycbyy0JH3d6nU3vmsqWuX5EaquRigj1dJlvizjJVzYGXohkiaAc2GYr2hiSM8JlcClS6tEQ/exec",
+        "required": false,
+        "contentType": "text/plain;charset=utf-8",
+        "_note": "text/plain keeps this a CORS 'simple request'. Apps Script web apps do not answer the OPTIONS preflight that application/json would trigger, so the POST would be blocked by the browser before it was ever sent. The body is still JSON - read it in doPost with JSON.parse(e.postData.contents)."
+      }
+    ],
     "consentText": "By registering you agree to receive emails and text messages from Zack Tarbet at OriginPoint about this class and related mortgage information. Message and data rates may apply. Reply STOP to opt out at any time."
   },
   "analytics": {

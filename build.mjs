@@ -384,6 +384,25 @@ function main() {
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${esc(site.analytics.ga4MeasurementId)}');</script>`
     : '';
 
+  // Lead destinations. Accepts the newer `destinations` array and the older
+  // single `webhookUrl`, so an existing config keeps working.
+  const rawDestinations = Array.isArray(site.lead?.destinations)
+    ? site.lead.destinations
+    : site.lead?.webhookUrl
+      ? [{ name: 'Webhook', url: site.lead.webhookUrl, required: true }]
+      : [];
+
+  const destinations = rawDestinations
+    .filter((d) => d && !unset(d.url))
+    .map((d) => ({
+      name: d.name || 'Webhook',
+      url: d.url,
+      required: d.required !== false,
+      contentType: d.contentType || 'application/json',
+    }));
+
+  const requiredDestinations = destinations.filter((d) => d.required);
+
   const logoCfg = site.logo || {};
   const logoFile = logoCfg.file && assetVersions[logoCfg.file] ? logoCfg.file : '';
   if (logoCfg.file && !logoFile) {
@@ -449,7 +468,7 @@ function main() {
     const ics = buildIcs(webinar, site, dates);
     write(`webinars/${webinar.slug}/${webinar.slug}.ics`, ics);
 
-    const registerMode = unset(site.lead?.webhookUrl) ? 'redirect-only' : webinar.mode || 'form';
+    const registerMode = destinations.length === 0 ? 'redirect-only' : webinar.mode || 'form';
     const zoomUrl = unset(webinar.zoomRegistrationUrl) ? '' : webinar.zoomRegistrationUrl;
 
     const body = render(webinarTpl, {
@@ -494,7 +513,7 @@ function main() {
         : '',
       registerMode,
       zoomUrl,
-      webhookUrl: unset(site.lead?.webhookUrl) ? '' : site.lead.webhookUrl,
+      endpoints: JSON.stringify(destinations),
     });
 
     write(
@@ -582,10 +601,10 @@ ${sitemapUrls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}
   // robots.txt is copied from public/, but needs the real sitemap URL.
   write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`);
 
-  report(webinars, site);
+  report(webinars, site, destinations);
 }
 
-function report(webinars, site) {
+function report(webinars, site, destinations = []) {
   console.log(`\n  Built ${webinars.length} webinar page(s) + home, thank-you, 404 into dist/\n`);
 
   if (placeholders.size === 0) {
@@ -607,11 +626,23 @@ function report(webinars, site) {
     );
   }
 
-  if (unset(site.lead?.webhookUrl)) {
+  if (destinations.length === 0) {
     console.log(
-      '\n  Note: no lead webhook is set, so registration forms currently forward\n' +
-        '        straight to each Zoom registration link instead of posting to the CRM.'
+      '\n  Note: no lead destination is set, so registration forms currently forward\n' +
+        '        straight to each Zoom registration link instead of recording the lead.'
     );
+  } else {
+    console.log('\n  Registrations are sent to:');
+    for (const d of destinations) {
+      console.log(`    ${d.required ? '[required]' : '[best effort]'} ${d.name}`);
+      console.log(`        ${d.url.slice(0, 78)}${d.url.length > 78 ? '...' : ''}`);
+    }
+    if (!destinations.some((d) => d.required)) {
+      console.log(
+        '\n  Warning: no destination is marked required, so a signup is treated as\n' +
+          '           successful even if every destination fails.'
+      );
+    }
   }
   console.log('');
 
