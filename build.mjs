@@ -102,6 +102,7 @@ function deriveDates(webinar, site) {
     weekday: fmt(start, { weekday: 'long' }, tz),
     dateLong: fmt(start, { month: 'long', day: 'numeric', year: 'numeric' }, tz),
     dateShort: fmt(start, { month: 'short', day: 'numeric' }, tz),
+    dateMedium: fmt(start, { weekday: 'short', month: 'short', day: 'numeric' }, tz),
     timeShort: fmt(start, { hour: 'numeric', minute: '2-digit' }, tz),
   };
 }
@@ -114,12 +115,82 @@ function telHref(raw) {
   return `+${d}`;
 }
 
+/* --------------------------------------------------------------------- icons */
+
+/** Inline stroke icons. currentColor so they inherit whatever they sit on. */
+const ICONS = {
+  calendar:
+    '<path d="M7 3v3M17 3v3M3.5 9h17M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V7A1.5 1.5 0 0 1 5 5.5Z"/>',
+  clock: '<path d="M12 7v5l3.5 2"/><circle cx="12" cy="12" r="8.5"/>',
+  video: '<path d="M15 10.5 20.5 7v10L15 13.5M4.5 6.5h9A1.5 1.5 0 0 1 15 8v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 3 16V8a1.5 1.5 0 0 1 1.5-1.5Z"/>',
+  ticket:
+    '<path d="M3.5 9.5V7A1.5 1.5 0 0 1 5 5.5h14A1.5 1.5 0 0 1 20.5 7v2.5a2.5 2.5 0 0 0 0 5V17a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 17v-2.5a2.5 2.5 0 0 0 0-5Z"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
+  user: '<circle cx="12" cy="8" r="3.75"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+  spark: '<path d="M12 3.5 13.9 9l5.6 1.9-5.6 1.9L12 18.4 10.1 12.8 4.5 10.9 10.1 9Z"/>',
+};
+
+/** Wraps an icon path in a sized <svg>. */
+function icon(name, cls = 'icon') {
+  return (
+    `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" ` +
+    `stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">` +
+    `${ICONS[name] || ''}</svg>`
+  );
+}
+
 /* --------------------------------------------------------------- fragments */
 
 function listItems(items, className = '') {
   return items
     .map((item) => `<li${className ? ` class="${className}"` : ''}>${esc(item)}</li>`)
     .join('\n          ');
+}
+
+/** The "what this covers" list, as numbered cards. */
+function topicCards(items) {
+  return items
+    .map(
+      (item, i) => `<li class="topic">
+            <span class="topic__num">${String(i + 1).padStart(2, '0')}</span>
+            <span class="topic__text">${esc(item)}</span>
+          </li>`
+    )
+    .join('\n          ');
+}
+
+/** The "who it is for" list, as check-marked cards. */
+function audienceCards(items) {
+  return items
+    .map(
+      (item) => `<li class="who">
+            <span class="who__icon">${icon('check')}</span>
+            <span>${esc(item)}</span>
+          </li>`
+    )
+    .join('\n          ');
+}
+
+/** The at-a-glance row under the hero headline. */
+function factChips(parts) {
+  return parts
+    .map(
+      (p) => `<li class="chip">
+            <span class="chip__icon">${icon(p.icon)}</span>
+            <span class="chip__body"><span class="chip__label">${esc(p.label)}</span>${p.value}</span>
+          </li>`
+    )
+    .join('\n          ');
+}
+
+/** Falls back to initials when there is no headshot in the config. */
+function initials(name) {
+  return String(name || '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join('');
 }
 
 /**
@@ -396,8 +467,19 @@ function main() {
       timeZone: site.timeZone,
       duration: `${webinar.durationMinutes} minutes`,
       location: webinar.location || 'Live on Zoom',
-      learnList: listItems(webinar.learnPoints),
-      forWhoList: listItems(webinar.forWho),
+      learnList: topicCards(webinar.learnPoints),
+      forWhoList: audienceCards(webinar.forWho),
+      topicCount: webinar.learnPoints.length,
+      factChips: factChips([
+        { icon: 'calendar', label: 'Date', value: esc(dates.dateMedium) },
+        { icon: 'clock', label: 'Time', value: `${esc(dates.timeShort)} ${esc(site.timeZoneLabel)}` },
+        { icon: 'video', label: 'Where', value: esc(webinar.location || 'Live on Zoom') },
+        { icon: 'ticket', label: 'Cost', value: `Free &middot; ${esc(webinar.durationMinutes)} min` },
+      ]),
+      hostInitials: initials(lo.name),
+      hostAvatar: lo.photo
+        ? `<img class="host__photo" src="${esc(lo.photo)}" alt="${esc(lo.name)}">`
+        : `<span class="host__initials" aria-hidden="true">${esc(initials(lo.name))}</span>`,
       extraField: extraFieldHtml(webinar.extraField),
       consentText: site.lead?.consentText || '',
       loName: lo.name,

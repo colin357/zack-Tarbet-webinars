@@ -93,34 +93,81 @@
     // Only worth showing when the viewer is actually somewhere else.
     if (timeIn(start, localZone) === timeIn(start, siteZone)) return;
 
-    target.textContent = 'That is ' + timeIn(start, localZone) + ' where you are.';
+    target.textContent = 'In your time zone that is ' + timeIn(start, localZone) + '.';
     target.hidden = false;
   }
 
   function initCountdown(article, start) {
-    var target = $('[data-countdown]', article);
-    if (!target) return;
+    var box = $('[data-countdown]', article);
+    if (!box) return;
+
+    var note = $('[data-countdown-note]', box);
+    var cells = {
+      days: $('[data-cd="days"]', box),
+      hours: $('[data-cd="hours"]', box),
+      minutes: $('[data-cd="minutes"]', box)
+    };
+
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
 
     function tick() {
       var diff = start.getTime() - Date.now();
+      box.hidden = false;
+
       if (diff <= 0) {
-        target.textContent = 'This session has started.';
-        target.hidden = false;
+        box.className = 'countdown countdown--live';
+        if (note) note.textContent = 'This session has started.';
         return false;
       }
+
       var mins = Math.floor(diff / 60000);
-      var days = Math.floor(mins / 1440);
-      var hours = Math.floor((mins % 1440) / 60);
-      var parts = [];
-      if (days) parts.push(days + (days === 1 ? ' day' : ' days'));
-      if (hours) parts.push(hours + (hours === 1 ? ' hour' : ' hours'));
-      if (!days) parts.push((mins % 60) + ' min');
-      target.textContent = 'Starts in ' + parts.join(', ') + '.';
-      target.hidden = false;
+      if (cells.days) cells.days.textContent = pad(Math.floor(mins / 1440));
+      if (cells.hours) cells.hours.textContent = pad(Math.floor((mins % 1440) / 60));
+      if (cells.minutes) cells.minutes.textContent = pad(mins % 60);
       return true;
     }
 
-    if (tick()) setInterval(tick, 60000);
+    if (tick()) setInterval(tick, 30000);
+  }
+
+  /* ------------------------------------------------------- sticky CTA bar */
+
+  function initStickyCta(article) {
+    var bar = $('[data-sticky-cta]', article);
+    var card = $('.register__card', article);
+    if (!bar || !card || !('IntersectionObserver' in window)) return;
+
+    bar.hidden = false; // CSS keeps it off-screen until it is marked visible
+
+    function show(on) {
+      if (on) {
+        bar.setAttribute('data-visible', '');
+        document.documentElement.classList.add('has-stickybar');
+      } else {
+        bar.removeAttribute('data-visible');
+        document.documentElement.classList.remove('has-stickybar');
+      }
+    }
+
+    new IntersectionObserver(
+      function (entries) {
+        // Only once the form has scrolled past the top of the viewport, so the
+        // bar never covers the form it is pointing at.
+        var e = entries[0];
+        show(!e.isIntersecting && e.boundingClientRect.top < 0);
+      },
+      { threshold: 0 }
+    ).observe(card);
+
+    // Tapping the bar should land on the form, not just jump the hash.
+    $$('a[href="#register"]', article).forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        event.preventDefault();
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var first = $('#firstName', card);
+        if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, 450);
+      });
+    });
   }
 
   /* ------------------------------------------------------------ the form */
@@ -323,6 +370,7 @@
         initCountdown(article, start);
       }
       initForm(article);
+      initStickyCta(article);
     }
     initThankYou();
   }

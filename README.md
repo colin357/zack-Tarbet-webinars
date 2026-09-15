@@ -151,6 +151,35 @@ doing pre-emptively — just know which lever to pull.
 
 ---
 
+## How the registration pages are laid out
+
+Each class page is one template (`src/templates/webinar.html`), driven entirely
+by its entry in `data/webinars.json`. Nothing is per-page hand-built, so a new
+class gets the same design for free.
+
+- **Navy hero** with the class title, a live countdown, and four at-a-glance
+  chips (date, time, where, cost). The form card sits beside it and dips into
+  the white section below.
+- **Countdown** ticks every 30 seconds and switches to "this session has
+  started" at go time.
+- **Numbered topic cards** built from `learnPoints` — the count in the kicker
+  ("6 things we go through") is derived, so it stays right when you edit the
+  list.
+- **Who it is for** from `forWho`, and a host panel that shows `loanOfficer.photo`
+  if you set one and falls back to initials if you do not.
+- **Sticky bar** slides up once the form scrolls fully out of view, and hides
+  again when it comes back. Every "Save my seat" link scrolls to the form and
+  focuses the first field rather than just jumping the hash.
+
+Two deliberate omissions: there are no attendee counts, "only X seats left"
+banners, or testimonials anywhere. Those would have to be invented, and this is
+a regulated industry. If Zack wants to cap the agent classes at 20 as he
+described, enforce it in Zoom or GoHighLevel — the page should not claim a limit
+it is not tracking.
+
+Hero text was checked against WCAG AA contrast; all of it passes at its rendered
+size. Worth re-checking if you change `--brand-navy` or `--brand-accent`.
+
 ## The logo
 
 `data/site.json` → `logo` controls it:
